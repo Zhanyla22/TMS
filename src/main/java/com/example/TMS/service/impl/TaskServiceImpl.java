@@ -4,7 +4,6 @@ import com.example.TMS.dto.request.AddTaskRequest;
 import com.example.TMS.dto.request.UpdateTaskRequest;
 import com.example.TMS.dto.response.InfoTaskResponse;
 import com.example.TMS.dto.response.TaskDeleteResponse;
-import com.example.TMS.dto.response.TokenValidResponse;
 import com.example.TMS.entity.Task;
 import com.example.TMS.entity.Users;
 import com.example.TMS.enums.Status;
@@ -28,13 +27,11 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UsersRepository usersRepository;
-    private final JWTService jwtService;
 
     @Override
-    public InfoTaskResponse addTask(AddTaskRequest addTaskRequest, String jwt) {
-        TokenValidResponse token = jwtService.validToken(jwt);
-        Users users = usersRepository.findByEmail(token.getUserName()).orElseThrow(
-                () -> new BaseException("пользователь с почтой" + token.getUserName() + " не найден", HttpStatus.NOT_FOUND)
+    public InfoTaskResponse addTask(AddTaskRequest addTaskRequest, Users users) {
+        Users users1 = usersRepository.findByEmail(users.getEmail()).orElseThrow(
+                () -> new BaseException("пользователь с почтой" + users.getEmail() + " не найден", HttpStatus.NOT_FOUND)
         );
         Users executer = usersRepository.findById(addTaskRequest.getExecuteId()).orElseThrow(
                 () -> new BaseException("пользователь с id " + addTaskRequest.getExecuteId() + " не найден", HttpStatus.NOT_FOUND)
@@ -45,7 +42,7 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(addTaskRequest.getStatus());
         task.setPriority(addTaskRequest.getPriority());
         task.setUuid(UUID.randomUUID());//TODO: check
-        task.setAuthor(users);
+        task.setAuthor(users1);
         task.setExecuter(executer);
         taskRepository.save(task);
         return TaskMapper.entityToResponse(task);
@@ -71,12 +68,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public InfoTaskResponse updateTask(UUID uuid, UpdateTaskRequest updateTaskRequest, String jwt) {
+    public InfoTaskResponse updateTask(UUID uuid, UpdateTaskRequest updateTaskRequest, Users users) {
         Task task = taskRepository.findTaskByUuid(uuid).orElseThrow(
                 () -> new BaseException("задача с uuid " + uuid + "Не найдена", HttpStatus.NOT_FOUND)
         );
-        TokenValidResponse token = jwtService.validToken(jwt);
-        if (token.getUserName().equals(task.getAuthor().getEmail())) {
+        if (users.getEmail().equals(task.getAuthor().getEmail())) {
             if (updateTaskRequest.getTitle() != null) {
                 task.setTitle(updateTaskRequest.getTitle());
             }
@@ -90,15 +86,15 @@ public class TaskServiceImpl implements TaskService {
                 task.setPriority(updateTaskRequest.getPriority());
             }
             if (updateTaskRequest.getExecuteId() != null) {
-                Users users = usersRepository.findById(updateTaskRequest.getExecuteId()).orElseThrow(
+                Users users1 = usersRepository.findById(updateTaskRequest.getExecuteId()).orElseThrow(
                         () -> new BaseException("пользователь с Id " + updateTaskRequest.getExecuteId() + "Не найден", HttpStatus.NOT_FOUND)
                 );
-                task.setExecuter(users);
+                task.setExecuter(users1);
             }
             taskRepository.save(task);
             return TaskMapper.entityToResponse(task);
 
-        } else if (token.getUserName().equals(task.getExecuter().getEmail())) {
+        } else if (users.getEmail().equals(task.getExecuter().getEmail())) {
             if (updateTaskRequest.getStatus() != null)
                 task.setStatus(updateTaskRequest.getStatus());
             taskRepository.save(task); //TODO: как можно сюда тоже добавить эксепшн, что он не может менять ничего кроме статуса

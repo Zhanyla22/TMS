@@ -21,7 +21,7 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return email-> userRepo.findByEmail(email)
+        return email -> userRepo.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("пользователь не найден"));
     }
 
@@ -30,6 +30,7 @@ public class ApplicationConfig {
      * используется DaoAuthenticationProvider, который использует UserDetailsService для загрузки информации о пользователе
      * PasswordEncoder для проверки пароля
      * Отвечает за проверку подлинности пользователей
+     *
      * @return autProvider
      */
     @Bean
@@ -42,6 +43,7 @@ public class ApplicationConfig {
 
     /**
      * управляет проуессом аутентификации
+     *
      * @param config
      * @return
      * @throws Exception

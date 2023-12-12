@@ -4,10 +4,12 @@ import com.example.TMS.controller.base.BaseController;
 import com.example.TMS.dto.ResponseDto;
 import com.example.TMS.dto.request.AddTaskRequest;
 import com.example.TMS.dto.request.UpdateTaskRequest;
+import com.example.TMS.entity.Users;
 import com.example.TMS.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -30,8 +32,8 @@ public class TaskController extends BaseController {
      */
     @Operation(summary = "Добавление новой задачи")
     @PostMapping("/add")
-    public ResponseEntity<ResponseDto> add(@RequestBody AddTaskRequest addTaskRequest, @RequestHeader("Authorization") String token) {
-        return constructSuccessResponse(taskService.addTask(addTaskRequest, token));
+    public ResponseEntity<ResponseDto> add(@RequestBody AddTaskRequest addTaskRequest, @AuthenticationPrincipal Users users) {
+        return constructSuccessResponse(taskService.addTask(addTaskRequest, users));
     }
 
     /**
@@ -61,7 +63,6 @@ public class TaskController extends BaseController {
      *                          *   status(enum) - статус задачи;
      *                          *   priority(enum) - приоритетность;
      *                          *   executeId - id исполнителя;
-     * @param token             токен
      * @return ResponseDto
      */
     @Operation(summary = "Обновление задачи по uuid (Автор задачи может изменять:  " +
@@ -72,7 +73,7 @@ public class TaskController extends BaseController {
             "    executeId(id исполнителя)) ;" +
             "исполнитель задачи может изменять : статус")
     @PutMapping("/update/{uuid}")
-    private ResponseEntity<ResponseDto> updateTask(@PathVariable UUID uuid, @RequestBody UpdateTaskRequest updateTaskRequest, @RequestHeader("Authorization") String token) {
-        return constructSuccessResponse(taskService.updateTask(uuid, updateTaskRequest, token));
+    private ResponseEntity<ResponseDto> updateTask(@PathVariable UUID uuid, @RequestBody UpdateTaskRequest updateTaskRequest,@AuthenticationPrincipal Users users) {
+        return constructSuccessResponse(taskService.updateTask(uuid, updateTaskRequest, users));
     }
 }
