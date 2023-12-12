@@ -4,6 +4,7 @@ import com.example.TMS.controller.base.BaseController;
 import com.example.TMS.dto.ResponseDto;
 import com.example.TMS.dto.request.AuthRequest;
 import com.example.TMS.service.UsersService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,12 @@ public class AuthController extends BaseController {
 
     private final UsersService usersService;
 
+    /**
+     * @param authRequest email - почта(есть валидация)
+     *                    password - пароль
+     * @return ResponseDto
+     */
+    @Operation(summary = "авторизация по почте и пароли, открытый API")
     @PostMapping("/auth")
     public ResponseEntity<ResponseDto> auth(@RequestBody AuthRequest authRequest){
         return constructSuccessResponse(usersService.auth(authRequest));
