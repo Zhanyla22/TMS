@@ -1,10 +1,12 @@
-package com.example.TMS.dto.request;
+package com.example.TMS.dto.response;
 
-import com.example.TMS.enums.Priority;
 import com.example.TMS.enums.StatusTask;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -12,19 +14,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddTaskRequest {
-
+public class InfoTaskMini {
     @NotNull
-    String title;
-
-    @NotNull
-    String description;
+    UUID uuid;
 
     @NotNull
     StatusTask statusTask;
-
-    @NotNull
-    Priority priority;
-
-    Long executorId;
 }

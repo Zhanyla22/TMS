@@ -27,9 +27,6 @@ public class BaseEntity {
     UUID uuid;
 
     @Enumerated(EnumType.STRING)
-    StatusTask statusTask;
-
-    @Enumerated(EnumType.STRING)
     Status status;
 
     @Column(name = "created_date")

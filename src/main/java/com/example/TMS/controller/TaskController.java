@@ -5,8 +5,10 @@ import com.example.TMS.dto.ResponseDto;
 import com.example.TMS.dto.request.AddTaskRequest;
 import com.example.TMS.dto.request.UpdateTaskRequest;
 import com.example.TMS.entity.User;
+import com.example.TMS.enums.StatusTask;
 import com.example.TMS.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -67,15 +69,30 @@ public class TaskController extends BaseController {
      *                          *   executeId - id исполнителя;
      * @return ResponseDto
      */
-    @Operation(summary = "Обновление задачи по uuid (Автор задачи может изменять:  " +
+    @Operation(summary = "Обновление задачи по uuid (только автор задачи может изменять:  " +
             "    title;\n" +
             "    description;\n" +
             "    priority;\n" +
             "    status;\n" +
-            "    executeId(id исполнителя)) ;" +
-            "исполнитель задачи может изменять : статус")
+            "    executeId(id исполнителя)) ;")
     @PutMapping("/update/{uuid}")
-    private ResponseEntity<ResponseDto> updateTask(@PathVariable UUID uuid, @RequestBody UpdateTaskRequest updateTaskRequest,@AuthenticationPrincipal User user) {
+    public ResponseEntity<ResponseDto> updateTask(@PathVariable UUID uuid,
+                                                  @RequestBody UpdateTaskRequest updateTaskRequest,
+                                                  @AuthenticationPrincipal User user) {
         return constructSuccessResponse(taskService.updateTask(uuid, updateTaskRequest, user));
+    }
+
+    @PutMapping("/change-status/{uuid}")
+    public ResponseEntity<ResponseDto> changeStatus(@PathVariable UUID uuid,
+                                                    @RequestParam StatusTask statusTask,
+                                                    @AuthenticationPrincipal User user){
+        return constructSuccessResponse(taskService.changeStatus(uuid,statusTask,user));
+    }
+
+    @PutMapping("/add-executor/{uuid}")
+    public ResponseEntity<ResponseDto> addExecutor(@PathVariable UUID uuid,
+                                                   @RequestParam @NotNull Long executorId,
+                                                   @AuthenticationPrincipal User user){
+        return constructSuccessResponse(taskService.addExecutor(uuid,executorId,user));
     }
 }
