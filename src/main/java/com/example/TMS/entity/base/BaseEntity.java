@@ -3,10 +3,7 @@ package com.example.TMS.entity.base;
 import com.example.TMS.enums.Status;
 import com.example.TMS.enums.StatusTask;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;

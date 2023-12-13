@@ -9,6 +9,7 @@ import com.example.TMS.entity.User;
 import com.example.TMS.enums.Status;
 import com.example.TMS.exception.base.BaseException;
 import com.example.TMS.mapper.TaskMapper;
+import com.example.TMS.mapper.TaskMapperTest;
 import com.example.TMS.repository.TaskRepository;
 import com.example.TMS.repository.UsersRepository;
 import com.example.TMS.service.TaskService;
@@ -27,6 +28,7 @@ public class TaskServiceImpl implements TaskService {
 
     TaskRepository taskRepository;
     UsersRepository usersRepository;
+    TaskMapper taskMapper;
 
     @Override
     public InfoTaskResponse addTask(AddTaskRequest addTaskRequest, User user) {
@@ -36,17 +38,9 @@ public class TaskServiceImpl implements TaskService {
         User executor = usersRepository.findById(addTaskRequest.getExecutorId()).orElseThrow(
                 () -> new BaseException("пользователь с id " + addTaskRequest.getExecutorId() + " не найден", HttpStatus.NOT_FOUND)
         );
-        Task task = new Task();
-        task.setTitle(addTaskRequest.getTitle());
-        task.setDescription(addTaskRequest.getDescription());
-        task.setStatusTask(addTaskRequest.getStatusTask());
-        task.setPriority(addTaskRequest.getPriority());
-        task.setUuid(UUID.randomUUID());//TODO: check
-        task.setAuthor(author);
-        task.setExecutor(executor);
-        task.setStatus(Status.ACTIVE);
+        Task task = taskMapper.toEntity(addTaskRequest,author, executor);
         taskRepository.save(task);
-        return TaskMapper.entityToResponse(task);
+        return taskMapper.toModel(task);
     }
 
     @Override
@@ -57,7 +51,7 @@ public class TaskServiceImpl implements TaskService {
         task.setStatus(Status.DELETED);
         taskRepository.save(task);
 
-        return TaskMapper.entityToDeleteResponse(task);
+        return TaskMapperTest.entityToDeleteResponse(task);
     }
 
     @Override
@@ -65,7 +59,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findTaskByUuid(uuid).orElseThrow(
                 () -> new BaseException("задача с uuid " + "не найдена", HttpStatus.NOT_FOUND)
         );
-        return TaskMapper.entityToResponse(task);
+        return TaskMapperTest.entityToResponse(task);
     }
 
     @Override
@@ -73,35 +67,29 @@ public class TaskServiceImpl implements TaskService {
         Task task = taskRepository.findTaskByUuid(uuid).orElseThrow(
                 () -> new BaseException("задача с uuid " + uuid + "Не найдена", HttpStatus.NOT_FOUND)
         );
-        if (user.getEmail().equals(task.getAuthor().getEmail())) {
-            if (updateTaskRequest.getTitle() != null) {
-                task.setTitle(updateTaskRequest.getTitle());
-            }
-            if (updateTaskRequest.getDescription() != null) {
-                task.setDescription(updateTaskRequest.getDescription());
-            }
-            if (updateTaskRequest.getStatusTask() != null) {
-                task.setStatusTask(updateTaskRequest.getStatusTask());
-            }
-            if (updateTaskRequest.getPriority() != null) {
-                task.setPriority(updateTaskRequest.getPriority());
-            }
-            task.setStatus(Status.UPDATED);
-            if (updateTaskRequest.getExecutorId() != null) {
-                User executor = usersRepository.findById(updateTaskRequest.getExecutorId()).orElseThrow(
-                        () -> new BaseException("пользователь с Id " + updateTaskRequest.getExecutorId() + "Не найден", HttpStatus.NOT_FOUND)
-                );
-                task.setExecutor(executor);
-            }
-            taskRepository.save(task);
-            return TaskMapper.entityToResponse(task);
-
-        } else if (user.getEmail().equals(task.getExecutor().getEmail())) {
-            if (updateTaskRequest.getStatusTask() != null)
-                task.setStatusTask(updateTaskRequest.getStatusTask());
-            taskRepository.save(task); //TODO: как можно сюда тоже добавить эксепшн, что он не может менять ничего кроме статуса
-            return TaskMapper.entityToResponse(task);
-        } else
+        if (!user.getEmail().equals(task.getAuthor().getEmail())) {
             throw new BaseException("Вы не можете менять не свои задачи или не предназначенные вам", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (updateTaskRequest.getTitle() != null) {
+            task.setTitle(updateTaskRequest.getTitle());
+        }
+        if (updateTaskRequest.getDescription() != null) {
+            task.setDescription(updateTaskRequest.getDescription());
+        }
+        if (updateTaskRequest.getStatusTask() != null) {
+            task.setStatusTask(updateTaskRequest.getStatusTask());
+        }
+        if (updateTaskRequest.getPriority() != null) {
+            task.setPriority(updateTaskRequest.getPriority());
+        }
+        if (updateTaskRequest.getExecutorId() != null) {
+            User executor = usersRepository.findById(updateTaskRequest.getExecutorId()).orElseThrow(
+                    () -> new BaseException("пользователь с Id " + updateTaskRequest.getExecutorId() + "Не найден", HttpStatus.NOT_FOUND)
+            );
+            task.setExecutor(executor);
+        }
+        task.setStatus(Status.UPDATED);
+        taskRepository.save(task);
+        return TaskMapperTest.entityToResponse(task);
     }
 }
