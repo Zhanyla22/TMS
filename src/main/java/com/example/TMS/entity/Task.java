@@ -2,7 +2,6 @@ package com.example.TMS.entity;
 
 import com.example.TMS.entity.base.BaseEntity;
 import com.example.TMS.enums.Priority;
-import com.example.TMS.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,8 +23,8 @@ public class Task extends BaseEntity {
     Priority priority;
 
     @ManyToOne
-    Users author;
+    User author;
 
     @ManyToOne
-    Users executer;
+    User executor;
 }

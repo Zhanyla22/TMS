@@ -6,6 +6,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -17,16 +19,17 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JWTService {
 
     @Value("${secret.key}")
-    private String SECRET_KEY;
+    String SECRET_KEY;
 
     @Value("${app.jwtExpirationMs}")
-    private Integer JWT_EXPIRED;
+    Integer JWT_EXPIRED;
 
     @Value("${app.jwtRefreshExpirationMs}")
-    private Integer REFRESH_EXPIRED;
+    Integer REFRESH_EXPIRED;
 
 
     public String extractEmail(String token) {

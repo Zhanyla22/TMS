@@ -23,7 +23,7 @@ import java.util.Collections;
 @Entity
 @Table(name = "users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Users extends BaseEntity implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     String name;
     String lastname;

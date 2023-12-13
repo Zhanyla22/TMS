@@ -1,14 +1,10 @@
 package com.example.TMS.dto.request;
 
-import com.example.TMS.entity.Users;
 import com.example.TMS.enums.Priority;
-import com.example.TMS.enums.Status;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.TMS.enums.StatusTask;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,11 +21,11 @@ public class AddTaskRequest {
     String description;
 
     @NotNull
-    Status status;
+    StatusTask statusTask;
 
     @NotNull
     Priority priority;
 
     @NotNull
-    Long executeId;
+    Long executorId;
 }

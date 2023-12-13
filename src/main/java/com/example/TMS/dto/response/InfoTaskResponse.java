@@ -2,11 +2,13 @@ package com.example.TMS.dto.response;
 
 import com.example.TMS.enums.Priority;
 import com.example.TMS.enums.Status;
+import com.example.TMS.enums.StatusTask;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -23,19 +25,22 @@ public class InfoTaskResponse {
     String description;
 
     @NotNull
+    StatusTask statusTask;
+
+    @NotNull
     Status status;
 
     @NotNull
     Priority priority;
 
     @NotNull
-    UsersResponseDto execute;
+    UsersResponseDto executor;
 
     @NotNull
     UsersResponseDto author;
 
     @NotNull
-    String uuid;
+    UUID uuid;
 
     @NotNull
     Long id;

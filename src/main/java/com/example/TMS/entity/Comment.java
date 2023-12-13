@@ -1,9 +1,7 @@
 package com.example.TMS.entity;
 
 import com.example.TMS.entity.base.BaseEntity;
-import com.example.TMS.enums.Status;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -25,5 +23,5 @@ public class Comment extends BaseEntity{
     Task task;
 
     @ManyToOne
-    Users users;
+    User user;
 }

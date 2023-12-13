@@ -5,7 +5,9 @@ import com.example.TMS.dto.ResponseDto;
 import com.example.TMS.dto.request.AuthRequest;
 import com.example.TMS.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthController extends BaseController {
 
-    private final UsersService usersService;
+    UsersService usersService;
 
     /**
      * @param authRequest email - почта(есть валидация)

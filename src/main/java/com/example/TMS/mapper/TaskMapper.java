@@ -12,19 +12,20 @@ public class TaskMapper {
         return InfoTaskResponse.builder()
                 .title(task.getTitle())
                 .description(task.getDescription())
-                .uuid(task.getUuid().toString())
+                .uuid(task.getUuid())
                 .id(task.getId())
                 .priority(task.getPriority())
+                .statusTask(task.getStatusTask())
                 .status(task.getStatus())
                 .author(UsersMapper.entityToResponse(task.getAuthor()))
-                .execute(UsersMapper.entityToResponse(task.getExecuter()))
+                .executor(UsersMapper.entityToResponse(task.getExecutor()))
                 .createdDate(task.getCreatedDate())
                 .build();
     }
 
     public static TaskDeleteResponse entityToDeleteResponse(Task task){
         return TaskDeleteResponse.builder()
-                .uuid(task.getUuid().toString())
+                .uuid(task.getUuid())
                 .status(task.getStatus())
                 .build();
     }

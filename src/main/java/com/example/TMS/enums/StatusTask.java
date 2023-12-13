@@ -1,9 +1,6 @@
 package com.example.TMS.enums;
 
-public enum Status {
-    ACTIVE,
-    DELETED,
-    UPDATED,
+public enum StatusTask {
     WAITING,
     PENDING,
     FINISHED

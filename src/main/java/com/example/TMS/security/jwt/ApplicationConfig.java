@@ -1,7 +1,9 @@
 package com.example.TMS.security.jwt;
 
 import com.example.TMS.repository.UsersRepository;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,9 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ApplicationConfig {
 
-    private final UsersRepository userRepo;
+    UsersRepository userRepo;
 
     @Bean
     public UserDetailsService userDetailsService() {

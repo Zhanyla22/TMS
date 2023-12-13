@@ -1,7 +1,7 @@
 package com.example.TMS.dto.request;
 
 import com.example.TMS.enums.Priority;
-import com.example.TMS.enums.Status;
+import com.example.TMS.enums.StatusTask;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -15,6 +15,6 @@ public class UpdateTaskRequest {
     String title;
     String description;
     Priority priority;
-    Status status;
-    Long executeId;
+    StatusTask statusTask;
+    Long executorId;
 }

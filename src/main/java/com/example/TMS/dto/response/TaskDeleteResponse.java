@@ -1,8 +1,11 @@
 package com.example.TMS.dto.response;
 
 import com.example.TMS.enums.Status;
+import com.example.TMS.enums.StatusTask;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -12,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TaskDeleteResponse {
 
-    String uuid;
+    UUID uuid;
 
     Status status;
 }

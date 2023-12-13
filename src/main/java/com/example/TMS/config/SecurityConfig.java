@@ -1,7 +1,10 @@
-package com.example.TMS.security;
+package com.example.TMS.config;
 
+import com.example.TMS.security.UserAuthenticationEntryPoint;
 import com.example.TMS.security.jwt.JWTAuthFilter;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -18,11 +21,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SecurityConfig {
 
-    private final JWTAuthFilter jwtAuthenticationFilter;
-    private final AuthenticationProvider authenticationProvider;
-    private final UserAuthenticationEntryPoint authenticationEntryPoint;
+    JWTAuthFilter jwtAuthenticationFilter;
+    AuthenticationProvider authenticationProvider;
+    UserAuthenticationEntryPoint authenticationEntryPoint;
 
     /**
      * открытые эндпоинты
