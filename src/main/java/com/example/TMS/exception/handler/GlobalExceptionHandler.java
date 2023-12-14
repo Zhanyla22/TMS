@@ -2,10 +2,7 @@ package com.example.TMS.exception.handler;
 
 import com.example.TMS.dto.ErrorResponse;
 import com.example.TMS.exception.BaseException;
-import com.example.TMS.exception.common.AuthenticationException;
-import com.example.TMS.exception.common.NotAllowedException;
-import com.example.TMS.exception.common.TaskNotFoundException;
-import com.example.TMS.exception.common.UserNotFoundException;
+import com.example.TMS.exception.common.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -66,8 +63,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         .build());
     }
 
+    @ExceptionHandler(value = CommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCommentNotFoundException(CommentNotFoundException e) {
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(ErrorResponse.builder()
+                        .message(e.getMessage())
+                        .build());
+    }
+
 
     //TODO:check
+
     /**
      * обработка исключений RuntimeException
      *

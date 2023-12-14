@@ -2,6 +2,7 @@ package com.example.TMS.controller;
 
 import com.example.TMS.dto.request.CommentAddRequest;
 import com.example.TMS.dto.response.CommentAddResponse;
+import com.example.TMS.dto.response.CommentDeleteResponse;
 import com.example.TMS.entity.User;
 import com.example.TMS.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,5 +27,11 @@ public class CommentController {
     @PostMapping("/add/{taskUuid}")
     public ResponseEntity<CommentAddResponse> add(@RequestBody CommentAddRequest commentAddRequest, @PathVariable UUID taskUuid, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(commentService.addComment(commentAddRequest, taskUuid, user));
+    }
+
+    @Operation(summary = "Удаление коммента(может только автор коммента или автор задачи)")
+    @PutMapping("/delete/{commentUuid}")
+    public ResponseEntity<CommentDeleteResponse> delete(@PathVariable UUID commentUuid, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(commentService.deleteComment(commentUuid, user));
     }
 }
