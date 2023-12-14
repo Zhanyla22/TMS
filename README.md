@@ -3,7 +3,7 @@
 <h> Язык: <b>Java 17</b></h> <br>
 <h> Framework: <b>Spring Boot</b></h> <br>
 <h> СУБД : <b>PostgreSql</b></h> <br>
-<h1 align="center">Запуск проекта </h1>
+<h1 align="center">Запуск проекта</h1>
 <h> <b>1.</b> Стянуть проект</h> <br>
 <h> <b>2.</b> Стянуть все необходимые зависимости в pom.xml</h> <br>
 <h> <b>3.</b> в application.properties поменять данные БД на свой</h> <br>
