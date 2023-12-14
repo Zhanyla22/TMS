@@ -105,12 +105,16 @@ public class TaskController {
             "            \"pageSize - количество записей на 1 страницу; pageNumber - начинается с 0, страница)")
     @GetMapping("/filter")
     public ResponseEntity<List<InfoTaskResponse>> filter(@RequestParam(required = false) StatusTask statusTask,
-                                                                   @RequestParam(required = false) Long authorId,
-                                                                   @RequestParam(required = false) Long executorId,
-                                                                   @RequestParam("sortBy") Optional<String> sortBy,
-                                                                   @RequestParam("pageSize") Optional<Integer> pageSize,
-                                                                   @RequestParam("pageNumber") Optional<Integer> pageNumber) {
-        return ResponseEntity.ok().body(taskService.getAllFilter(statusTask, authorId, executorId, PageRequest.of(pageNumber.orElse(0), pageSize.orElse(1000), Sort.by(sortBy.orElse("id")))));
+                                                         @RequestParam(required = false) Long authorId,
+                                                         @RequestParam(required = false) Long executorId,
+                                                         @RequestParam("sortBy") Optional<String> sortBy,
+                                                         @RequestParam("pageSize") Optional<Integer> pageSize,
+                                                         @RequestParam("pageNumber") Optional<Integer> pageNumber) {
+        if (statusTask != null || authorId != null || executorId != null) {
+            return ResponseEntity.ok().body(taskService.getAllFilter(statusTask, authorId, executorId, PageRequest.of(pageNumber.orElse(0), pageSize.orElse(1000), Sort.by(sortBy.orElse("id")))));
+        } else {
+            return ResponseEntity.ok().body(taskService.getAllOrderByCreatedDate(PageRequest.of(pageNumber.orElse(0), pageSize.orElse(1000), Sort.by(sortBy.orElse("id")))));
+        }
     }
 
 

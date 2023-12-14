@@ -31,6 +31,13 @@ public class CommentServiceImpl implements CommentService {
     CommentRepository commentRepository;
     CommentMapper commentMapper;
 
+    /**
+     * Добавление комментария к задаче
+     * @param commentAddRequest
+     * @param taskUuid
+     * @param user
+     * @return
+     */
     @Override
     public CommentAddResponse addComment(CommentAddRequest commentAddRequest, UUID taskUuid, User user) {
         Task task = taskRepository.findTaskByUuid(taskUuid).orElseThrow(
@@ -41,10 +48,17 @@ public class CommentServiceImpl implements CommentService {
         return commentMapper.toModel(commentRepository.save(comment));
     }
 
+    /**
+     * удаления комментария, при удалении менятся статус комментария на deleted
+     * @param commentUuid
+     * @param user
+     * @return
+     */
     @Override
     public CommentDeleteResponse deleteComment(UUID commentUuid, User user) {
         Comment comment = commentRepository.findByUuid(commentUuid).orElseThrow(
                 () -> new CommentNotFoundException(commentUuid, HttpStatus.NOT_FOUND));
+        //комментарий могут удалять автор задачи либо автор комментария
         if (!user.getEmail().equals(comment.getUser().getEmail()) & !user.getEmail().equals(comment.getTask().getAuthor().getEmail())) {
             throw new NotAllowedException(" delete comment", HttpStatus.METHOD_NOT_ALLOWED);
         }

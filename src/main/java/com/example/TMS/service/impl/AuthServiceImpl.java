@@ -27,6 +27,13 @@ public class AuthServiceImpl implements AuthService {
     JWTService jwtService;
     UsersRepository usersRepository;
 
+    /**
+     * Логин с
+     * @param authRequest
+     * принимает пароль и почту от фронта, передаются на метод authenticate
+     * где происходит авторизация, при успешном кейсе генерируется аксесс токен и рефреш токен
+     * @return AuthResponse - содержит аксесс токенб рейреш токен и их время жизни
+     */
     @Override
     public AuthResponse auth(AuthRequest authRequest) {
         try {
@@ -42,6 +49,11 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * перегенерация токенов
+     * @param user
+     * @return AuthResponse
+     */
     @Override
     public AuthResponse refresh(User user) {
         User user1 = usersRepository.findByEmail(user.getEmail()).orElseThrow(

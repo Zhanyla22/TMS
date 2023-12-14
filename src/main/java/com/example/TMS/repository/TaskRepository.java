@@ -25,6 +25,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT t FROM Task t WHERE " +
             "(t.status = :status AND t.statusTask = :statusTask) " +
             "OR (t.status = :status AND t.author.id = :authorId)" +
-            "OR (t.status = :status AND t.executor.id = :executorId)")
+            "OR (t.status = :status AND t.executor.id = :executorId)" +
+            "order by t.createdDate DESC ")
     Page<Task> findAllByStatusAndStatusTaskAuthorIdOrExecutorId(Status status, StatusTask statusTask, Long authorId, Long executorId, Pageable pageable);
+
+    Page<Task> findAllByOrderByCreatedDateDesc(Pageable pageable);
 }

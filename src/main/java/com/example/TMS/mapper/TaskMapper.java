@@ -11,6 +11,9 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
+/**
+ * использовала MapStruct для чистоты и сокращения кода
+ */
 @Mapper(componentModel = "spring",uses = CommentMapper.class)
 public interface TaskMapper {
 

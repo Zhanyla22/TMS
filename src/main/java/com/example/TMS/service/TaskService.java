@@ -32,4 +32,6 @@ public interface TaskService {
     List<InfoTaskResponse> getTasksByExecutor(User executor, PageRequest pageRequest);
 
     List<InfoTaskResponse> getAllFilter(StatusTask statusTask,Long authorId,Long executorId,PageRequest pageRequest);
+
+    List<InfoTaskResponse> getAllOrderByCreatedDate(PageRequest pageRequest);
 }
