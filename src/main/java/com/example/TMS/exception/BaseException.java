@@ -1,4 +1,4 @@
-package com.example.TMS.exception.base;
+package com.example.TMS.exception;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -15,7 +15,7 @@ public interface TaskService {
 
     InfoTaskResponse addTask(AddTaskRequest addTaskRequest, User user);
 
-    TaskDeleteResponse deleteTaskByUuid(UUID uuid);
+    TaskDeleteResponse deleteTaskByUuid(UUID uuid, User user);
 
     InfoTaskResponse getByUuid(UUID uuid);
 

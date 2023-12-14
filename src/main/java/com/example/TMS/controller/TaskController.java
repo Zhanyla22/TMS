@@ -1,9 +1,11 @@
 package com.example.TMS.controller;
 
-import com.example.TMS.controller.base.BaseController;
-import com.example.TMS.dto.ResponseDto;
 import com.example.TMS.dto.request.AddTaskRequest;
 import com.example.TMS.dto.request.UpdateTaskRequest;
+import com.example.TMS.dto.response.InfoExecutorResponse;
+import com.example.TMS.dto.response.InfoTaskMini;
+import com.example.TMS.dto.response.InfoTaskResponse;
+import com.example.TMS.dto.response.TaskDeleteResponse;
 import com.example.TMS.entity.User;
 import com.example.TMS.enums.StatusTask;
 import com.example.TMS.service.TaskService;
@@ -22,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/task")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class TaskController extends BaseController {
+public class TaskController {
 
     TaskService taskService;
 
@@ -36,8 +38,8 @@ public class TaskController extends BaseController {
      */
     @Operation(summary = "Добавление новой задачи")
     @PostMapping("/add")
-    public ResponseEntity<ResponseDto> add(@RequestBody AddTaskRequest addTaskRequest, @AuthenticationPrincipal User user) {
-        return constructSuccessResponse(taskService.addTask(addTaskRequest, user));
+    public ResponseEntity<InfoTaskResponse> add(@RequestBody AddTaskRequest addTaskRequest, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(taskService.addTask(addTaskRequest, user));
     }
 
     /**
@@ -46,8 +48,8 @@ public class TaskController extends BaseController {
      */
     @Operation(summary = "Удаление задачи по uuid")
     @PostMapping("/delete/{uuid}")
-    public ResponseEntity<ResponseDto> delete(@PathVariable UUID uuid) {
-        return constructSuccessResponse(taskService.deleteTaskByUuid(uuid));
+    public ResponseEntity<TaskDeleteResponse> delete(@PathVariable UUID uuid, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(taskService.deleteTaskByUuid(uuid, user));
     }
 
     /**
@@ -56,13 +58,13 @@ public class TaskController extends BaseController {
      */
     @Operation(summary = "Просмотр задачи по uuid")
     @GetMapping("/get/{uuid}")
-    public ResponseEntity<ResponseDto> getByUuid(@PathVariable UUID uuid) {
-        return constructSuccessResponse(taskService.getByUuid(uuid));
+    public ResponseEntity<InfoTaskResponse> getByUuid(@PathVariable UUID uuid) {
+        return ResponseEntity.ok().body(taskService.getByUuid(uuid));
     }
 
     /**
      * @param uuid              для поиска задачи по uuid
-     * @param updateTaskRequest    title - заголовок;
+     * @param updateTaskRequest title - заголовок;
      *                          *   description - описание;
      *                          *   status(enum) - статус задачи;
      *                          *   priority(enum) - приоритетность;
@@ -76,23 +78,23 @@ public class TaskController extends BaseController {
             "    status;\n" +
             "    executeId(id исполнителя)) ;")
     @PutMapping("/update/{uuid}")
-    public ResponseEntity<ResponseDto> updateTask(@PathVariable UUID uuid,
-                                                  @RequestBody UpdateTaskRequest updateTaskRequest,
-                                                  @AuthenticationPrincipal User user) {
-        return constructSuccessResponse(taskService.updateTask(uuid, updateTaskRequest, user));
+    public ResponseEntity<InfoTaskResponse> updateTask(@PathVariable UUID uuid,
+                                                       @RequestBody UpdateTaskRequest updateTaskRequest,
+                                                       @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(taskService.updateTask(uuid, updateTaskRequest, user));
     }
 
     @PutMapping("/change-status/{uuid}")
-    public ResponseEntity<ResponseDto> changeStatus(@PathVariable UUID uuid,
-                                                    @RequestParam StatusTask statusTask,
-                                                    @AuthenticationPrincipal User user){
-        return constructSuccessResponse(taskService.changeStatus(uuid,statusTask,user));
+    public ResponseEntity<InfoTaskMini> changeStatus(@PathVariable UUID uuid,
+                                                     @RequestParam StatusTask statusTask,
+                                                     @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(taskService.changeStatus(uuid, statusTask, user));
     }
 
     @PutMapping("/add-executor/{uuid}")
-    public ResponseEntity<ResponseDto> addExecutor(@PathVariable UUID uuid,
-                                                   @RequestParam @NotNull Long executorId,
-                                                   @AuthenticationPrincipal User user){
-        return constructSuccessResponse(taskService.addExecutor(uuid,executorId,user));
+    public ResponseEntity<InfoExecutorResponse> addExecutor(@PathVariable UUID uuid,
+                                                            @RequestParam @NotNull Long executorId,
+                                                            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(taskService.addExecutor(uuid, executorId, user));
     }
 }

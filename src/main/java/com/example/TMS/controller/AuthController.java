@@ -1,9 +1,9 @@
 package com.example.TMS.controller;
 
-import com.example.TMS.controller.base.BaseController;
-import com.example.TMS.dto.ResponseDto;
 import com.example.TMS.dto.request.AuthRequest;
+import com.example.TMS.dto.response.AuthResponse;
 import com.example.TMS.entity.User;
+import com.example.TMS.service.AuthService;
 import com.example.TMS.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/auth")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AuthController extends BaseController {
+public class AuthController {
 
-    UsersService usersService;
+    AuthService authService;
 
     /**
      * @param authRequest email - почта(есть валидация)
@@ -27,13 +27,13 @@ public class AuthController extends BaseController {
      * @return ResponseDto
      */
     @Operation(summary = "авторизация по почте и пароли, открытый API")
-    @PostMapping("/auth")
-    public ResponseEntity<ResponseDto> auth(@RequestBody AuthRequest authRequest){
-        return constructSuccessResponse(usersService.auth(authRequest));
+    @PostMapping("/sign-in")
+    public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest authRequest) {
+        return ResponseEntity.ok().body(authService.auth(authRequest));
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<ResponseDto> refreshToken(@AuthenticationPrincipal User user) {
-        return constructSuccessResponse(usersService.refresh(user));
+    public ResponseEntity<AuthResponse> refreshToken(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(authService.refresh(user));
     }
 }
