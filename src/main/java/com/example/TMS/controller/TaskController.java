@@ -47,7 +47,7 @@ public class TaskController {
      * @return ResponseDto
      */
     @Operation(summary = "Удаление задачи по uuid")
-    @PostMapping("/delete/{uuid}")
+    @PutMapping("/delete/{uuid}")
     public ResponseEntity<TaskDeleteResponse> delete(@PathVariable UUID uuid, @AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(taskService.deleteTaskByUuid(uuid, user));
     }

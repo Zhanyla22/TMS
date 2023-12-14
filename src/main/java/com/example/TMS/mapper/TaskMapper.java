@@ -20,5 +20,5 @@ public interface TaskMapper {
 
     InfoExecutorResponse toModelExecutor(Task task);
 
-    Task toEntity(AddTaskRequest addTaskRequest, User author, User executor); //TODO: fix mapStruct with BaseEntity
+    Task toEntity(AddTaskRequest addTaskRequest, User author, User executor);
 }
