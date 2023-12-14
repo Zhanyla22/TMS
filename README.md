@@ -3,3 +3,5 @@
 <h> Язык: <b>Java 17</b></h> <br>
 <h> Framework: <b>Spring Boot</b></h> <br>
 <h> СУБД : <b>PostgreSql</b></h> <br>
+
+<h1 align="center">Запуск проекта </h1>
