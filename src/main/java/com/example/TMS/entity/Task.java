@@ -4,6 +4,7 @@ import com.example.TMS.entity.base.BaseEntity;
 import com.example.TMS.enums.Priority;
 import com.example.TMS.enums.StatusTask;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,7 +18,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Task extends BaseEntity {
 
+    @Size(max = 10)
     String title;
+
+    @Size(max = 300)
     String description;
 
     @Enumerated(EnumType.STRING)
@@ -25,9 +29,6 @@ public class Task extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     StatusTask statusTask;
-
-//    @ManyToOne
-//    User changedBy;
 
     @ManyToOne
     User author;

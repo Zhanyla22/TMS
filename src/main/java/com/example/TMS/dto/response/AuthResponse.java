@@ -1,6 +1,8 @@
 package com.example.TMS.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,14 +17,14 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthResponse {
 
-    @NotNull
+    @NotBlank(message = "jwt can't be empty or null")
     String jwt;
 
     @NotNull
     @JsonProperty("date_expired_access_token")
     Date dateExpiredAccessToken;
 
-    @NotNull
+    @NotBlank(message = "refreshToken can't be empty or null")
     @JsonProperty("refresh_token")
     String refreshToken;
 

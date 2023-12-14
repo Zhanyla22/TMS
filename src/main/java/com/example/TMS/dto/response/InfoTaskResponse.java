@@ -3,11 +3,14 @@ package com.example.TMS.dto.response;
 import com.example.TMS.enums.Priority;
 import com.example.TMS.enums.Status;
 import com.example.TMS.enums.StatusTask;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -18,10 +21,10 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InfoTaskResponse {
 
-    @NotNull
+    @NotBlank
     String title;
 
-    @NotNull
+    @NotBlank
     String description;
 
     @NotNull
@@ -47,4 +50,6 @@ public class InfoTaskResponse {
 
     @NotNull
     LocalDateTime createdDate;
+
+    List<CommentDto> commentDtos;
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,9 +26,16 @@ import java.util.Collections;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity implements UserDetails {
 
+    @Size(max = 100)
     String name;
+
+    @Size(max = 150)
     String lastname;
+
+    @Size(max = 200)
     String email;
+
+    @Size(max = 50)
     String password;
 
     @Enumerated(EnumType.STRING)

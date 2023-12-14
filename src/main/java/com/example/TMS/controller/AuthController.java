@@ -4,7 +4,6 @@ import com.example.TMS.dto.request.AuthRequest;
 import com.example.TMS.dto.response.AuthResponse;
 import com.example.TMS.entity.User;
 import com.example.TMS.service.AuthService;
-import com.example.TMS.service.UsersService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +31,7 @@ public class AuthController {
         return ResponseEntity.ok().body(authService.auth(authRequest));
     }
 
+    @Operation(summary = "рефреш токен")
     @GetMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(authService.refresh(user));
