@@ -177,6 +177,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
+     * Все задачи которые должен выполнить пользователь
+     * @param executor
+     * @param pageRequest
+     * @return
+     */
+    @Override
+    public List<InfoTaskResponse> getTasksByExecutor(User executor, PageRequest pageRequest) {
+        Page<Task> tasks = taskRepository.findAllByExecutorAndStatus(executor, Status.ACTIVE, pageRequest);
+        List<InfoTaskResponse> taskResponses = taskMapper.toModelList(tasks);
+        for(InfoTaskResponse infoTaskResponse : taskResponses){
+            List<Comment> commentsForTask = commentRepository.findAllByTaskUuidAndStatus(infoTaskResponse.getUuid(), Status.ACTIVE);
+            infoTaskResponse.setCommentDtos(commentMapper.mapToCommentDtos(commentsForTask));
+        }
+        return taskResponses;
+    }
+
+    /**
      * Получение задачи по uuid с комментариями
      * @param uuid
      * @return
@@ -189,17 +206,6 @@ public class TaskServiceImpl implements TaskService {
         return taskMapper.toModels(task, comment);
     }
 
-    /**
-     * Все задачи которые должен выполнить пользователь
-     * @param executor
-     * @param pageRequest
-     * @return
-     */
-    @Override
-    public List<InfoTaskResponse> getTasksByExecutor(User executor, PageRequest pageRequest) {
-        Page<Task> tasks = taskRepository.findAllByExecutorAndStatus(executor, Status.ACTIVE, pageRequest);
-        return taskMapper.toModelList(tasks);
-    }
 
     /**
      * Фильтрация активных задач по статусу, автору, исполнителю с пагинацией

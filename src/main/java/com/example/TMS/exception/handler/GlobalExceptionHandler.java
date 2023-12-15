@@ -1,6 +1,6 @@
 package com.example.TMS.exception.handler;
 
-import com.example.TMS.dto.ErrorResponse;
+import com.example.TMS.dto.ErrorResponseDto;
 import com.example.TMS.exception.BaseException;
 import com.example.TMS.exception.common.*;
 import org.springframework.http.HttpStatus;
@@ -19,55 +19,55 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return сообщение об ошибке и HTTP статус
      */
     @ExceptionHandler(value = BaseException.class)
-    public ResponseEntity<ErrorResponse> handleBaseException(BaseException e) {
+    public ResponseEntity<ErrorResponseDto> handleBaseException(BaseException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+    public ResponseEntity<ErrorResponseDto> handleUserNotFoundException(UserNotFoundException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = AuthenticationException.class)
-    public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(AuthenticationException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = TaskNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleTaskNotFoundException(TaskNotFoundException e) {
+    public ResponseEntity<ErrorResponseDto> handleTaskNotFoundException(TaskNotFoundException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = NotAllowedException.class)
-    public ResponseEntity<ErrorResponse> handleNotAllowedException(NotAllowedException e) {
+    public ResponseEntity<ErrorResponseDto> handleNotAllowedException(NotAllowedException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = CommentNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleCommentNotFoundException(CommentNotFoundException e) {
+    public ResponseEntity<ErrorResponseDto> handleCommentNotFoundException(CommentNotFoundException e) {
         return ResponseEntity
                 .status(e.getStatus())
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
@@ -82,11 +82,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return HTTP ответ со статусом 500
      */
     @ExceptionHandler(value = RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+    public ResponseEntity<ErrorResponseDto> handleRuntimeException(RuntimeException e) {
         e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.builder()
+                .body(ErrorResponseDto.builder()
                         .message(e.getMessage())
                         .build());
     }
