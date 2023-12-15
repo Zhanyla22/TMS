@@ -14,6 +14,7 @@ import com.example.TMS.enums.StatusTask;
 import com.example.TMS.exception.common.NotAllowedException;
 import com.example.TMS.exception.common.TaskNotFoundException;
 import com.example.TMS.exception.common.UserNotFoundException;
+import com.example.TMS.mapper.CommentMapper;
 import com.example.TMS.mapper.TaskMapper;
 import com.example.TMS.repository.CommentRepository;
 import com.example.TMS.repository.TaskRepository;
@@ -39,6 +40,7 @@ public class TaskServiceImpl implements TaskService {
     UsersRepository usersRepository;
     TaskMapper taskMapper;
     CommentRepository commentRepository;
+    CommentMapper commentMapper;
 
     /**
      * Добавление новой задачи
@@ -166,7 +168,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<InfoTaskResponse> getTasksByCurrentUser(User user, PageRequest pageRequest) {
         Page<Task> tasks = taskRepository.findAllByAuthorAndStatus(user, Status.ACTIVE, pageRequest);
-        return taskMapper.toModelList(tasks);
+        List<InfoTaskResponse> taskResponses = taskMapper.toModelList(tasks);
+        for(InfoTaskResponse infoTaskResponse : taskResponses){
+            List<Comment> commentsForTask = commentRepository.findAllByTaskUuidAndStatus(infoTaskResponse.getUuid(), Status.ACTIVE);
+            infoTaskResponse.setCommentDtos(commentMapper.mapToCommentDtos(commentsForTask));
+        }
+        return taskResponses;
     }
 
     /**
