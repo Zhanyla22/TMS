@@ -13,7 +13,6 @@
 CREATE DATABASE tms;</h> <br>
 <h> <b>6.</b> Swagger локальный url: <a href="http://localhost:8080/documentation/swagger-ui/index.html"> http://localhost:8080/documentation/swagger-ui/index.html </a> </h> <br>
 <h> <b>7.</b> Открытые эндпоинты : "/auth/sign-in", </h> <br>
-<h> <b></b>                    "/auth/sign-in" </h> <br>
 <h> <b></b>                   "/registration/" </h> <br>
 <h> <b></b>                   "/registration/confirm" </h> <br>
 
