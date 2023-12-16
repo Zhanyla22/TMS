@@ -10,4 +10,6 @@
 <h> <b>4.</b> Сооздать БД с названием  <b>'tms'</b></h> <br>
 <h> <b>3.</b> Swagger локальный url: <a href="http://localhost:8080/documentation/swagger-ui/index.html"> http://localhost:8080/documentation/swagger-ui/index.html </a> </h> <br>
 <h> <b>3.</b> Открытый эндпоинт : "/auth/sign-in" </h> <br>
+<h> <b>3.</b>                   : "/registration/" </h> <br>
+<h> <b>3.</b>                   : "/registration/confirm" </h> <br>
 
