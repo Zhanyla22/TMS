@@ -9,8 +9,8 @@
 <h> <b>3.</b> В application.properties поменять данные БД на свой</h> <br>
 <h> <b>4.</b> Создать БД с названием  <b>'tms'</b></h> <br>
 <h> <b>3.</b> Swagger локальный url: <a href="http://localhost:8080/documentation/swagger-ui/index.html"> http://localhost:8080/documentation/swagger-ui/index.html </a> </h> <br>
-<h> <b>3.</b> Открытые эндпоинты : "/auth/sign-in" </h> <br>
-<h> <b></b>                   : "/auth/sign-in" </h> <br>
-<h> <b></b>                   : "/registration/" </h> <br>
-<h> <b></b>                   : "/registration/confirm" </h> <br>
+<h> <b>3.</b> Открытые эндпоинты : "/auth/sign-in", </h> <br>
+<h> <b></b>                    "/auth/sign-in" </h> <br>
+<h> <b></b>                   "/registration/" </h> <br>
+<h> <b></b>                   "/registration/confirm" </h> <br>
 
