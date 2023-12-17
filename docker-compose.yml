@@ -1,0 +1,24 @@
+version: '3.7'
+services:
+  postgres-tms:
+    container_name: postgres-tms
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tms
+  tms:
+    container_name: tms
+    image: tms
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-tms:5432/tms
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres-tms

@@ -118,6 +118,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>tms-dockerfile</finalName>
 	</build>
 
 </project>
