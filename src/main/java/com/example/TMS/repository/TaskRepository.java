@@ -17,7 +17,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findTaskByUuid(UUID uuid);
 
-    //TODO: можно ли соединить эти 2 метода
     Page<Task> findAllByAuthorAndStatus(User author, Status status, Pageable pageable);
 
     Page<Task> findAllByExecutorAndStatus(User executor, Status status, Pageable pageable);

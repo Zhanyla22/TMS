@@ -19,5 +19,6 @@ public class ConfirmCodeRequest {
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     String email;
 
+    @NotBlank(message = "code can't be empty or null")
     String code;
 }

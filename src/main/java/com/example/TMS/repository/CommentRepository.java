@@ -14,6 +14,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Optional<Comment> findByUuid(UUID uuid);
 
-
     List<Comment> findAllByTaskUuidAndStatus(UUID taskUuid, Status status);
 }

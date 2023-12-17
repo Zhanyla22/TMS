@@ -37,6 +37,11 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
                 () -> new UserNotFoundException(email, HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Регистрация по почте
+     * @param request
+     * @return
+     */
     @Override
     public String registration(RegistrationRequest request) {
         if (usersRepository.existsByEmail(request.getEmail())) {
