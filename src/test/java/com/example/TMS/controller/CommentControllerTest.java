@@ -1,86 +1,84 @@
 package com.example.TMS.controller;
 
-import com.example.TMS.dto.response.CommentDeleteResponse;
+import com.example.TMS.dto.request.AuthRequest;
 import com.example.TMS.entity.Comment;
 import com.example.TMS.entity.Task;
 import com.example.TMS.entity.User;
-import com.example.TMS.enums.Priority;
-import com.example.TMS.enums.Role;
 import com.example.TMS.enums.Status;
 import com.example.TMS.enums.StatusTask;
-import com.example.TMS.service.CommentService;
-import org.junit.Before;
+import com.example.TMS.repository.CommentRepository;
+import com.example.TMS.repository.TaskRepository;
+import com.example.TMS.repository.UsersRepository;
+import com.example.TMS.service.AuthService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Order(4)
 class CommentControllerTest {
 
-    @InjectMocks
-    private CommentController commentController;
+    @Autowired
+    UsersRepository usersRepository;
 
-    @Mock
-    private CommentService commentService;
+    @Autowired
+    TaskRepository taskRepository;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.openMocks(this); // Инициализация моков перед каждым тестом
-    }
+    @Autowired
+    AuthService authService;
 
-    @Test
-    void add() throws Exception {
+    @Autowired
+    CommentRepository commentRepository;
 
-        User mockUser = new User("Zhanylai", "Mamytova", "ja.mamytova@gmail.com", "$2a$12$DQ6JKTJ4B1ukxka/8man5ee3MrcEIrsMw5vvViAkP450zJbvb8h7y", Role.ROLE_ADMIN);
-        Task mockTask = new Task("CRUD for Task", "Create update read delete for task", Priority.HIGH, StatusTask.PENDING, mockUser, mockUser);
-    }
+    @Autowired
+    MockMvc mockMvc;
 
     @Test
     void delete() throws Exception {
-        UUID commentUuid = UUID.randomUUID();
-        UUID userUuid = UUID.randomUUID();
-        User mockUser = new User("Zhanylai", "Mamytova", "ja.mamytova@gmail.com", "$2a$12$DQ6JKTJ4B1ukxka/8man5ee3MrcEIrsMw5vvViAkP450zJbvb8h7y", Role.ROLE_ADMIN);
-        mockUser.setId(2L);
-        mockUser.setUuid(userUuid);
-        mockUser.setStatus(Status.ACTIVE);
-        Task mockTask = new Task("CRUD", "hello crud", Priority.HIGH, StatusTask.PENDING, mockUser, mockUser);
-        Comment mockComment = new Comment();
-        mockComment.setUuid(commentUuid);
-        mockComment.setDescription("hello, brother");
-        mockComment.setStatus(Status.ACTIVE);
-        mockComment.setCreatedDate(LocalDateTime.now());
-        mockComment.setId(1L);
-        mockComment.setTask(mockTask);
-        mockComment.setUser(mockUser);
-
-        CommentDeleteResponse expectedResponse = CommentDeleteResponse.builder()
-                .commentUuid(commentUuid)
-                .status(Status.DELETED)
+        User user = usersRepository.findByEmail("test@gmail.com").orElse(null);
+        UUID uuid = UUID.randomUUID();
+        Task task = Task.builder()
+                .status(Status.ACTIVE)
+                .uuid(uuid)
+                .statusTask(StatusTask.PENDING)
+                .author(user)
                 .build();
 
-        Mockito.when(commentService.deleteComment(commentUuid, mockComment.getUser())).thenReturn(expectedResponse);
+        taskRepository.saveAndFlush(task);
 
-        ResponseEntity<CommentDeleteResponse> responseEntity = commentController.delete(commentUuid, mockComment.getUser());
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(expectedResponse, responseEntity.getBody());
-    }
-
-
-    private CommentDeleteResponse createMockDeleteResponse(UUID commentUuid) {
-        return CommentDeleteResponse.builder()
-                .commentUuid(commentUuid)
-                .status(Status.DELETED)
+        UUID uuid1 = UUID.randomUUID();
+        Comment comment = Comment.builder()
+                .description("test comment")
+                .user(user)
+                .task(task)
+                .status(Status.ACTIVE)
+                .uuid(uuid1)
                 .build();
+
+        commentRepository.saveAndFlush(comment);
+
+        String jwtToken = authService.auth(AuthRequest.builder()
+                        .email("test@gmail.com")
+                        .password("Password123!")
+                        .build())
+                .getJwt();
+
+        mockMvc.perform(put("/comment/delete/" + comment.getUuid()).contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().is2xxSuccessful());
+
     }
 }
