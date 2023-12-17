@@ -15,4 +15,5 @@ CREATE DATABASE tms;</h> <br>
 <h> <b>7.</b> Открытые эндпоинты : "/auth/sign-in", </h> <br>
 <h> <b></b>                   "/registration/" </h> <br>
 <h> <b></b>                   "/registration/confirm" </h> <br>
-
+<h1 align="center">Run Docker-compose command </h1>
+<h> docker-compose -f docker-compose.yml up</h> <br>
