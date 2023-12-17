@@ -16,11 +16,11 @@ import lombok.experimental.FieldDefaults;
 public class AuthRequest {
 
     @NotBlank(message = "email can't be empty or null")
-    @Schema(example = "ja.mamytova@gmail.com")
+    @Schema(example = "test@gmail.com")
     @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
     String email;
 
     @NotBlank(message = "password can't be empty or null")
-    @Schema(example = "admin")
+    @Schema(example = "Password123!")
     String password;
 }

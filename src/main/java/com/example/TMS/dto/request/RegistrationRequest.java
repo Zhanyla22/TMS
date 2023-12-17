@@ -20,7 +20,7 @@ public class RegistrationRequest {
     String email;
 
     @NotBlank(message = "password can't be empty or null")
-    @Schema(example = "admin")
+    @Schema(example = "Password123!")
     @Size(min = 5)
     String password;
 
