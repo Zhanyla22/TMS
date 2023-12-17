@@ -1,33 +1,24 @@
 package com.example.TMS.entity.base;
 
-import com.example.TMS.enums.Status;
-import com.example.TMS.enums.StatusTask;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @MappedSuperclass
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-    /**
-     *uuid используется для манипуляции данными вместо id для более безопасного зарпоса
-     */
-    @Column(name = "uuid")
-    UUID uuid;
-
-    @Enumerated(EnumType.STRING)
-    Status status;
 
     @Column(name = "created_date")
     LocalDateTime createdDate;

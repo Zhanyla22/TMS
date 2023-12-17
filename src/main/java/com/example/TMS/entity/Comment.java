@@ -1,12 +1,13 @@
 package com.example.TMS.entity;
 
 import com.example.TMS.entity.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.example.TMS.enums.Status;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +17,9 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Table(name = "comment")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Comment extends BaseEntity{
+public class Comment extends BaseEntity {
+
+    UUID uuid;
 
     @Size(max = 300)
     String description;
@@ -26,4 +29,7 @@ public class Comment extends BaseEntity{
 
     @ManyToOne
     User user;
+
+    @Enumerated(EnumType.STRING)
+    Status status;
 }

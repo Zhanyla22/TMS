@@ -12,6 +12,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentAddRequest {
+
     @NotBlank(message = "description can't be empty or null")
     @Schema(example = "дедлайн пропущен")
     String description;

@@ -2,6 +2,7 @@ package com.example.TMS.entity;
 
 import com.example.TMS.entity.base.BaseEntity;
 import com.example.TMS.enums.Role;
+import com.example.TMS.enums.Status;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -9,6 +10,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,20 +28,21 @@ import java.util.Collections;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User extends BaseEntity implements UserDetails {
 
-    @Size(max = 100)
     String name;
 
-    @Size(max = 150)
     String lastname;
 
-    @Size(max = 200)
     String email;
 
-    @Size(max = 50)
     String password;
+
+    String registrationCode;
 
     @Enumerated(EnumType.STRING)
     Role role;
+
+    @Enumerated(EnumType.STRING)
+    Status status;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

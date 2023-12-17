@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +40,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Autowired
     @Qualifier("handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
+
     /**
      * Вызывается для каждого HTTP запроса клиента
-     * @param request - HTTP запрос от клиента
-     * @param response- HTTP ответ который отправляется клиенту
+     *
+     * @param request     - HTTP запрос от клиента
+     * @param response-   HTTP ответ который отправляется клиенту
      * @param filterChain - фильтры которым передается запрос после этого фильтра
      */
     @Override

@@ -33,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * Добавление комментария к задаче
+     *
      * @param commentAddRequest
      * @param taskUuid
      * @param user
@@ -42,14 +43,13 @@ public class CommentServiceImpl implements CommentService {
     public CommentAddResponse addComment(CommentAddRequest commentAddRequest, UUID taskUuid, User user) {
         Task task = taskRepository.findTaskByUuid(taskUuid).orElseThrow(
                 () -> new TaskNotFoundException(taskUuid, HttpStatus.NOT_FOUND));
-        Comment comment = commentMapper.toEntity(commentAddRequest, task, user);
-        comment.setUuid(UUID.randomUUID());
-        comment.setStatus(Status.ACTIVE);
+        Comment comment = commentMapper.toEntity(commentAddRequest, task, user, UUID.randomUUID());
         return commentMapper.toModel(commentRepository.save(comment));
     }
 
     /**
      * удаления комментария, при удалении менятся статус комментария на deleted
+     *
      * @param commentUuid
      * @param user
      * @return

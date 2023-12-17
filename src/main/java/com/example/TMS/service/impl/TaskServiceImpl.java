@@ -1,9 +1,9 @@
 package com.example.TMS.service.impl;
 
-import com.example.TMS.dto.request.AddTaskRequest;
-import com.example.TMS.dto.request.UpdateTaskRequest;
-import com.example.TMS.dto.response.InfoExecutorResponse;
-import com.example.TMS.dto.response.InfoTaskMini;
+import com.example.TMS.dto.request.TaskAddRequest;
+import com.example.TMS.dto.request.TaskUpdateRequest;
+import com.example.TMS.dto.response.ExecutorInfoResponse;
+import com.example.TMS.dto.response.TaskInfoMiniResponse;
 import com.example.TMS.dto.response.InfoTaskResponse;
 import com.example.TMS.dto.response.TaskDeleteResponse;
 import com.example.TMS.entity.Comment;
@@ -44,30 +44,30 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Добавление новой задачи
-     * @param addTaskRequest - все поля кроме title могут быть пустыми
-     * @param user - пользователь который сейчас logged-in
+     *
+     * @param taskAddRequest - все поля кроме title могут быть пустыми
+     * @param user           - пользователь который сейчас logged-in
      * @return InfoTaskResponse - информация о новой задаче которого только что добавили
      */
     @Override
-    public InfoTaskResponse addTask(AddTaskRequest addTaskRequest, User user) {
+    public InfoTaskResponse addTask(TaskAddRequest taskAddRequest, User user) {
         User author = usersRepository.findByEmail(user.getEmail()).orElseThrow(
                 () -> new UserNotFoundException(user.getEmail(), HttpStatus.NOT_FOUND)
         );
         // id исполнителя проверяется на ноль чтобы избежать ошибки Null при поиске пользователя в БД,
         // так как при добавлении задачи поле executor может быть пустым
-        User executor = addTaskRequest.getExecutorId() != null ?
-                usersRepository.findById(addTaskRequest.getExecutorId())
-                        .orElseThrow(() -> new UserNotFoundException(addTaskRequest.getExecutorId(), HttpStatus.NOT_FOUND))
+        User executor = taskAddRequest.getExecutorId() != null ?
+                usersRepository.findById(taskAddRequest.getExecutorId())
+                        .orElseThrow(() -> new UserNotFoundException(taskAddRequest.getExecutorId(), HttpStatus.NOT_FOUND))
                 : null;
-        Task task = taskMapper.toEntity(addTaskRequest, author, executor);
-        task.setStatus(Status.ACTIVE);
-        task.setUuid(UUID.randomUUID());
+        Task task = taskMapper.toEntity(taskAddRequest, author, executor, UUID.randomUUID());
         return taskMapper.toModel(taskRepository.save(task));
     }
 
     /**
      * Удаление задачи по uuid(более безопасный чем по id)
      * При удалении меняется только статус на deleted
+     *
      * @param uuid
      * @param user
      * @return
@@ -87,13 +87,14 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Обновление задачи
+     *
      * @param uuid
      * @param updateTaskRequest
      * @param user
      * @return
      */
     @Override
-    public InfoTaskResponse updateTask(UUID uuid, UpdateTaskRequest updateTaskRequest, User user) {
+    public InfoTaskResponse updateTask(UUID uuid, TaskUpdateRequest updateTaskRequest, User user) {
         Task task = taskRepository.findTaskByUuid(uuid).orElseThrow(
                 () -> new TaskNotFoundException(uuid, HttpStatus.NOT_FOUND));
 
@@ -118,17 +119,26 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Поменять статус задачи
+     *
      * @param uuid
      * @param statusTask
      * @param user
      * @return
      */
     @Override
-    public InfoTaskMini changeStatus(UUID uuid, StatusTask statusTask, User user) {
+    public TaskInfoMiniResponse changeStatus(UUID uuid, StatusTask statusTask, User user) {
         Task task = taskRepository.findTaskByUuid(uuid).orElseThrow(
                 () -> new TaskNotFoundException(uuid, HttpStatus.NOT_FOUND));
         //Статус задачи может менять сам автор либо исполнитель
-        if (!user.getEmail().equals(task.getAuthor().getEmail()) & !user.getEmail().equals(task.getExecutor().getEmail())) { //TODO:check
+        if (task.getExecutor() == null) {
+            if (!user.getEmail().equals(task.getAuthor().getEmail())) {
+                throw new NotAllowedException("change status", HttpStatus.METHOD_NOT_ALLOWED);
+            }
+            task.setStatusTask(statusTask);
+
+            return taskMapper.toModelInfo(taskRepository.save(task));
+        }
+        if (!user.getEmail().equals(task.getAuthor().getEmail()) & !user.getEmail().equals(task.getExecutor().getEmail())) {
             throw new NotAllowedException("change status", HttpStatus.METHOD_NOT_ALLOWED);
         }
         task.setStatusTask(statusTask);
@@ -138,13 +148,14 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * добавление исполнителя задачи
+     *
      * @param uuid
      * @param executorId
      * @param user
      * @return
      */
     @Override
-    public InfoExecutorResponse addExecutor(UUID uuid, Long executorId, User user) {
+    public ExecutorInfoResponse addExecutor(UUID uuid, Long executorId, User user) {
         Task task = taskRepository.findTaskByUuid(uuid).orElseThrow(
                 () -> new TaskNotFoundException(uuid, HttpStatus.NOT_FOUND));
 
@@ -161,6 +172,7 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Все созданные задачи автора
+     *
      * @param user
      * @param pageRequest
      * @return
@@ -169,15 +181,16 @@ public class TaskServiceImpl implements TaskService {
     public List<InfoTaskResponse> getTasksByCurrentUser(User user, PageRequest pageRequest) {
         Page<Task> tasks = taskRepository.findAllByAuthorAndStatus(user, Status.ACTIVE, pageRequest);
         List<InfoTaskResponse> taskResponses = taskMapper.toModelList(tasks);
-        for(InfoTaskResponse infoTaskResponse : taskResponses){
+        for (InfoTaskResponse infoTaskResponse : taskResponses) {
             List<Comment> commentsForTask = commentRepository.findAllByTaskUuidAndStatus(infoTaskResponse.getUuid(), Status.ACTIVE);
-            infoTaskResponse.setCommentDtos(commentMapper.mapToCommentDtos(commentsForTask));
+            infoTaskResponse.setCommentResponses(commentMapper.mapToCommentDtos(commentsForTask));
         }
         return taskResponses;
     }
 
     /**
      * Все задачи которые должен выполнить пользователь
+     *
      * @param executor
      * @param pageRequest
      * @return
@@ -186,15 +199,16 @@ public class TaskServiceImpl implements TaskService {
     public List<InfoTaskResponse> getTasksByExecutor(User executor, PageRequest pageRequest) {
         Page<Task> tasks = taskRepository.findAllByExecutorAndStatus(executor, Status.ACTIVE, pageRequest);
         List<InfoTaskResponse> taskResponses = taskMapper.toModelList(tasks);
-        for(InfoTaskResponse infoTaskResponse : taskResponses){
+        for (InfoTaskResponse infoTaskResponse : taskResponses) {
             List<Comment> commentsForTask = commentRepository.findAllByTaskUuidAndStatus(infoTaskResponse.getUuid(), Status.ACTIVE);
-            infoTaskResponse.setCommentDtos(commentMapper.mapToCommentDtos(commentsForTask));
+            infoTaskResponse.setCommentResponses(commentMapper.mapToCommentDtos(commentsForTask));
         }
         return taskResponses;
     }
 
     /**
      * Получение задачи по uuid с комментариями
+     *
      * @param uuid
      * @return
      */
@@ -209,6 +223,7 @@ public class TaskServiceImpl implements TaskService {
 
     /**
      * Фильтрация активных задач по статусу, автору, исполнителю с пагинацией
+     *
      * @param statusTask
      * @param authorId
      * @param executorId
@@ -216,13 +231,15 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
-    public List<InfoTaskResponse> getAllFilter(StatusTask statusTask,Long authorId, Long executorId,PageRequest pageRequest) {
-        Page<Task> tasks = taskRepository.findAllByStatusAndStatusTaskAuthorIdOrExecutorId(Status.ACTIVE,statusTask,authorId,executorId,pageRequest);
+    public List<InfoTaskResponse> getAllFilter(StatusTask statusTask, Long authorId, Long executorId, PageRequest
+            pageRequest) {
+        Page<Task> tasks = taskRepository.findAllByStatusAndStatusTaskAuthorIdOrExecutorId(Status.ACTIVE, statusTask, authorId, executorId, pageRequest);
         return taskMapper.toModelList(tasks);
     }
 
     /**
      * Получение всех задач отфильтрован по дате создания
+     *
      * @param pageRequest
      * @return
      */

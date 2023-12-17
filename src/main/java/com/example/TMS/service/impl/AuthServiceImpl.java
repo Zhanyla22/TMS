@@ -3,6 +3,7 @@ package com.example.TMS.service.impl;
 import com.example.TMS.dto.request.AuthRequest;
 import com.example.TMS.dto.response.AuthResponse;
 import com.example.TMS.entity.User;
+import com.example.TMS.enums.Status;
 import com.example.TMS.exception.BaseException;
 import com.example.TMS.exception.common.AuthenticationException;
 import com.example.TMS.exception.common.UserNotFoundException;
@@ -29,13 +30,18 @@ public class AuthServiceImpl implements AuthService {
 
     /**
      * Логин с
-     * @param authRequest
-     * принимает пароль и почту от фронта, передаются на метод authenticate
-     * где происходит авторизация, при успешном кейсе генерируется аксесс токен и рефреш токен
+     *
+     * @param authRequest принимает пароль и почту от фронта, передаются на метод authenticate
+     *                    где происходит авторизация, при успешном кейсе генерируется аксесс токен и рефреш токен
      * @return AuthResponse - содержит аксесс токенб рейреш токен и их время жизни
      */
     @Override
     public AuthResponse auth(AuthRequest authRequest) {
+        User user = usersRepository.findByEmail(authRequest.getEmail()).orElseThrow(
+                () -> new UserNotFoundException("user with email " + authRequest.getEmail() + "not found", HttpStatus.NOT_FOUND));
+        if (!user.getStatus().equals(Status.ACTIVE)) {
+            throw new BaseException("Your email wasn't confirmed", HttpStatus.NOT_ACCEPTABLE);
+        }
         try {
             Authentication authenticate = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -45,12 +51,13 @@ public class AuthServiceImpl implements AuthService {
             );
             return jwtService.generateToken((User) authenticate.getPrincipal());
         } catch (Exception e) {
-            throw new AuthenticationException(HttpStatus.NOT_FOUND);
+            throw new AuthenticationException(HttpStatus.BAD_REQUEST);
         }
     }
 
     /**
      * перегенерация токенов
+     *
      * @param user
      * @return AuthResponse
      */

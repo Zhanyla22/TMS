@@ -1,12 +1,12 @@
 package com.example.TMS.dto.response;
 
-import com.example.TMS.enums.StatusTask;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
-
 
 @Getter
 @Setter
@@ -14,10 +14,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InfoTaskMini {
+public class CommentResponse {
+    @NotBlank
+    String commentAuthor;
+    @NotBlank
+    String description;
     @NotNull
-    UUID uuid;
-
+    UUID commentUuid;
     @NotNull
-    StatusTask statusTask;
+    LocalDateTime createdDate;
 }

@@ -11,5 +11,5 @@ public interface CommentService {
 
     CommentAddResponse addComment(CommentAddRequest commentAddRequest, UUID taskUuid, User user);
 
-    CommentDeleteResponse deleteComment(UUID commentUuid,User user);
+    CommentDeleteResponse deleteComment(UUID commentUuid, User user);
 }

@@ -1,9 +1,9 @@
 package com.example.TMS.controller;
 
-import com.example.TMS.dto.request.AddTaskRequest;
-import com.example.TMS.dto.request.UpdateTaskRequest;
-import com.example.TMS.dto.response.InfoExecutorResponse;
-import com.example.TMS.dto.response.InfoTaskMini;
+import com.example.TMS.dto.request.TaskAddRequest;
+import com.example.TMS.dto.request.TaskUpdateRequest;
+import com.example.TMS.dto.response.ExecutorInfoResponse;
+import com.example.TMS.dto.response.TaskInfoMiniResponse;
 import com.example.TMS.dto.response.InfoTaskResponse;
 import com.example.TMS.dto.response.TaskDeleteResponse;
 import com.example.TMS.entity.User;
@@ -34,8 +34,8 @@ public class TaskController {
 
     @Operation(summary = "Добавление новой задачи")
     @PostMapping("/add")
-    public ResponseEntity<InfoTaskResponse> add(@RequestBody AddTaskRequest addTaskRequest, @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok().body(taskService.addTask(addTaskRequest, user));
+    public ResponseEntity<InfoTaskResponse> add(@RequestBody TaskAddRequest taskAddRequest, @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(taskService.addTask(taskAddRequest, user));
     }
 
     @Operation(summary = "Удаление задачи по uuid")
@@ -58,22 +58,22 @@ public class TaskController {
             "    executeId(id исполнителя)) ;")
     @PutMapping("/update/{uuid}")
     public ResponseEntity<InfoTaskResponse> updateTask(@PathVariable UUID uuid,
-                                                       @RequestBody UpdateTaskRequest updateTaskRequest,
+                                                       @RequestBody TaskUpdateRequest updateTaskRequest,
                                                        @AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(taskService.updateTask(uuid, updateTaskRequest, user));
     }
 
     @Operation(summary = "менять статус задачи : менять могут только автор задачи либо исполнитель задачи")
     @PutMapping("/change-status/{uuid}")
-    public ResponseEntity<InfoTaskMini> changeStatus(@PathVariable UUID uuid,
-                                                     @RequestParam StatusTask statusTask,
-                                                     @AuthenticationPrincipal User user) {
+    public ResponseEntity<TaskInfoMiniResponse> changeStatus(@PathVariable UUID uuid,
+                                                             @RequestParam StatusTask statusTask,
+                                                             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(taskService.changeStatus(uuid, statusTask, user));
     }
 
     @Operation(summary = "добавление исполнителя задачи, добавлять может только автор задачи")
     @PutMapping("/add-executor/{uuid}")
-    public ResponseEntity<InfoExecutorResponse> addExecutor(@PathVariable UUID uuid,
+    public ResponseEntity<ExecutorInfoResponse> addExecutor(@PathVariable UUID uuid,
                                                             @RequestParam @NotNull Long executorId,
                                                             @AuthenticationPrincipal User user) {
         return ResponseEntity.ok().body(taskService.addExecutor(uuid, executorId, user));
@@ -82,7 +82,7 @@ public class TaskController {
 
     @Operation(summary = "Получение всех задач автора которые он создал с пагинацией(sortBy: сортировка по поле;" +
             "pageSize - количество записей на 1 страницу; pageNumber - начинается с 0, страница)")
-    @GetMapping("/get-all-active-author-task-by-current-user")
+    @GetMapping("/get-all-active-created-current-user")
     public ResponseEntity<List<InfoTaskResponse>> getTaskByCurrentUser(@AuthenticationPrincipal User user,
                                                                        @RequestParam("sortBy") Optional<String> sortBy,
                                                                        @RequestParam("pageSize") Optional<Integer> pageSize,
@@ -92,7 +92,7 @@ public class TaskController {
 
     @Operation(summary = "Получение всех задач на исполнение пользователя с пагинацией (sortBy: сортировка по поле;\" +\n" +
             "            \"pageSize - количество записей на 1 страницу; pageNumber - начинается с 0, страница)")
-    @GetMapping("/get-all-active-task-to-do-by-current-user")
+    @GetMapping("/get-all-active-to-do-current-user")
     public ResponseEntity<List<InfoTaskResponse>> getTasksTodoByCurrentUser(@AuthenticationPrincipal User user,
                                                                             @RequestParam("sortBy") Optional<String> sortBy,
                                                                             @RequestParam("pageSize") Optional<Integer> pageSize,

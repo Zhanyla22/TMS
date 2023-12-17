@@ -3,7 +3,6 @@ package com.example.TMS.dto.response;
 import com.example.TMS.enums.Priority;
 import com.example.TMS.enums.Status;
 import com.example.TMS.enums.StatusTask;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -37,10 +36,10 @@ public class InfoTaskResponse {
     Priority priority;
 
     @NotNull
-    UsersResponseDto executor;
+    UsersResponse executor;
 
     @NotNull
-    UsersResponseDto author;
+    UsersResponse author;
 
     @NotNull
     UUID uuid;
@@ -51,5 +50,5 @@ public class InfoTaskResponse {
     @NotNull
     LocalDateTime createdDate;
 
-    List<CommentDto> commentDtos;
+    List<CommentResponse> commentResponses;
 }

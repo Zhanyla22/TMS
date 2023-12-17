@@ -4,7 +4,6 @@ import com.example.TMS.enums.Priority;
 import com.example.TMS.enums.StatusTask;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,19 +13,24 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddTaskRequest {
-
+public class TaskUpdateRequest {
     @NotBlank(message = "title can't be empty or null")
     @Schema(example = "CRUD for Task")
     String title;
 
-    @Schema(example = "CRUD for TASK API")
+    @NotBlank(message = "description can't be empty or null")
+    @Schema(example = "CRUD For task API ")
     String description;
 
-    StatusTask statusTask;
-
+    @NotBlank(message = "priority can't be empty or null")
+    @Schema(example = "HIGH")
     Priority priority;
 
+    @NotBlank(message = "statusTask can't be empty or null")
+    @Schema(example = "PENDING")
+    StatusTask statusTask;
+
+    @NotBlank(message = "executorId can't be empty or null")
     @Schema(example = "1")
     Long executorId;
 }

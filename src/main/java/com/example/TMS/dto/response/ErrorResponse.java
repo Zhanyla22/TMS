@@ -1,4 +1,4 @@
-package com.example.TMS.dto;
+package com.example.TMS.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,6 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ErrorResponseDto {
+public class ErrorResponse {
     String message;
 }

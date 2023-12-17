@@ -1,11 +1,9 @@
 package com.example.TMS.dto.response;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -14,13 +12,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentDto {
-    @NotBlank
-    String commentAuthor;
-    @NotBlank
-    String description;
+public class ExecutorInfoResponse {
+
     @NotNull
-    UUID commentUuid;
+    UUID uuid;
+
     @NotNull
-    LocalDateTime createdDate;
+    UsersResponse executor;
 }
